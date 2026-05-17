@@ -210,7 +210,6 @@ for path in [
     ".config",
     ".local/bin",
     ".local/share/backgrounds",
-    ".local/share/fonts",
     ".local/share/icons",
     ".local/share/onboard",
     ".themes",
