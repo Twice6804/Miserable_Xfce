@@ -447,6 +447,42 @@ for dotfile in [".profile", ".Xresources"]:
     )
 
 upload_sanitized_text(
+    name="Fix hardcoded icon path in sidebar launcher",
+    relative_path=".config/xfce4/panel/launcher-1/16790342511.desktop",
+    dest=f"{DESKTOP_HOME}/.config/xfce4/panel/launcher-1/16790342511.desktop",
+    replacements=[
+        (
+            "Icon=/home/mehedirm6244/Dots/dotfile/components/windows-color.svg",
+            f"Icon={DESKTOP_HOME}/.assets/Menu.svg",
+        ),
+    ],
+)
+
+upload_sanitized_text(
+    name="Fix hardcoded icon path in expose launcher",
+    relative_path=".config/xfce4/panel/launcher-12/16844757053.desktop",
+    dest=f"{DESKTOP_HOME}/.config/xfce4/panel/launcher-12/16844757053.desktop",
+    replacements=[
+        (
+            "Icon=/home/mehedirm6244/.assets/icons/stack.svg",
+            f"Icon={DESKTOP_HOME}/.assets/stack.svg",
+        ),
+    ],
+)
+
+upload_sanitized_text(
+    name="Fix hardcoded icon path in system stats launcher",
+    relative_path=".config/xfce4/panel/launcher-17/16825992421.desktop",
+    dest=f"{DESKTOP_HOME}/.config/xfce4/panel/launcher-17/16825992421.desktop",
+    replacements=[
+        (
+            "Icon=/home/mehedirm6244/.assets/icons/activity.svg",
+            f"Icon={DESKTOP_HOME}/.assets/activity.svg",
+        ),
+    ],
+)
+
+upload_sanitized_text(
     name="Install lock script without eval injection risk",
     relative_path=".local/bin/lock.sh",
     dest=f"{DESKTOP_HOME}/.local/bin/lock.sh",
