@@ -1,4 +1,4 @@
-#!/usr/bin/env --split-string=python -u
+#!/usr/bin/env python3
 """Script that interacts with playerctl to manipulate all MPRIS players.
 Here it is mostly being used for getting the current track metadata and feeding it
 to an YUCK listener variable.
