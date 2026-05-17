@@ -21,3 +21,4 @@ prompt pure
 
 # Exec when loading zsh
 # Insert something here
+case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$PATH:$HOME/.local/bin" ;; esac
