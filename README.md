@@ -14,10 +14,10 @@ A animated Xfce desktop environment with transitions and aesthetics. Everything 
 
 ## Installation
 
-Get the base setup running in one go!:
+Requires [pyinfra](https://pyinfra.com/). Clone the repo, then run:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/mehedirm6244/Miserable_Xfce/refs/heads/Serenade/scripts/clone.sh)
+pyinfra inventory.py installer.py -D desktop_user=<your-username>
 ```
 
 **After installation, reboot your system.** Then proceed to setup.
