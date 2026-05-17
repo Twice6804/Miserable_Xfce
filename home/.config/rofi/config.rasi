@@ -6,6 +6,10 @@
 
 @theme "/dev/null"
 
+configuration {
+    show-icons: true;
+}
+
 * {
     font:   "Overpass 12";
 
