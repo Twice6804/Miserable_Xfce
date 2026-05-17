@@ -503,6 +503,31 @@ for script in [
         mode="755",
     )
 
+BG_PATH = quote(f"{DESKTOP_HOME}/.local/share/backgrounds/nomanssky.png")
+
+server.shell(
+    name="Set desktop wallpaper via xfconf",
+    commands=(
+        f"DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus "
+        f"xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image "
+        f"-n -t string -s {BG_PATH}"
+    ),
+    _sudo=True,
+    _sudo_user=DESKTOP_USER,
+)
+
+server.shell(
+    name="Pre-cache lockscreen background",
+    commands=(
+        f"convert {BG_PATH} "
+        f"-resize 1920x1080^ -gravity center -extent 1920x1080 "
+        f"-brightness-contrast -15x0 -filter Gaussian -blur 0x5 "
+        f"{quote(f'{DESKTOP_HOME}/lockscreen.png')}"
+    ),
+    _sudo=True,
+    _sudo_user=DESKTOP_USER,
+)
+
 server.shell(
     name="Install pure zsh prompt from GitHub",
     commands=(
