@@ -505,15 +505,22 @@ for script in [
 
 BG_PATH = quote(f"{DESKTOP_HOME}/.local/share/backgrounds/nomanssky.png")
 
-server.shell(
-    name="Set desktop wallpaper via xfconf",
-    commands=(
-        f"DISPLAY=:0 DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$(id -u)/bus "
-        f"xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/last-image "
-        f"-n -t string -s {BG_PATH}"
-    ),
-    _sudo=True,
-    _sudo_user=DESKTOP_USER,
+files.directory(
+    name="Ensure xfce4 xfconf perchannel-xml directory exists",
+    path=f"{DESKTOP_HOME}/.config/xfce4/xfconf/xfce-perchannel-xml",
+    user=DESKTOP_USER,
+    group=DESKTOP_GROUP,
+    mode="755",
+)
+
+files.template(
+    name="Set desktop wallpaper via xfconf config",
+    src="templates/xfce4-desktop.xml.j2",
+    dest=f"{DESKTOP_HOME}/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml",
+    user=DESKTOP_USER,
+    group=DESKTOP_GROUP,
+    mode="644",
+    bg_path=f"{DESKTOP_HOME}/.local/share/backgrounds/nomanssky.png",
 )
 
 server.shell(
