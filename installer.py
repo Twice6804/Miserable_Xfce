@@ -108,6 +108,7 @@ apt.packages(
         "numix-icon-theme-circle",
         "thunar",
         "xfce4-panel",
+        "xfce4-panel-profiles",
         "xfce4-docklike-plugin",
         "bat",
         "rofi",
