@@ -53,6 +53,7 @@ FLUENT_ICON_REF = host.data.get("fluent_icon_ref", "master")
 FLUENT_ICON_BUILD_DIR = host.data.get("fluent_icon_build_dir", f"{DESKTOP_HOME}/.cache/build/Fluent-icon-theme")
 ZAFIRO_ICON_REPO = host.data.get("zafiro_icon_repo", "https://github.com/zayronxio/Zafiro-icons.git")
 ZAFIRO_ICON_REF = host.data.get("zafiro_icon_ref", "master")
+ZAFIRO_ICON_BUILD_DIR = host.data.get("zafiro_icon_build_dir", f"{DESKTOP_HOME}/.cache/build/Zafiro-icons")
 OVERPASS_REPO = host.data.get("overpass_repo", "https://github.com/RedHatOfficial/Overpass.git")
 OVERPASS_REF = host.data.get("overpass_ref", "v3.0.5")
 OVERPASS_BUILD_DIR = host.data.get("overpass_build_dir", f"{DESKTOP_HOME}/.cache/build/overpass")
@@ -67,6 +68,7 @@ I3LOCK_COLOR_BUILD_DIR_Q = quote(I3LOCK_COLOR_BUILD_DIR)
 I3LOCK_COLOR_REF_Q = quote(I3LOCK_COLOR_REF)
 FINDEX_BUILD_DIR_Q = quote(FINDEX_BUILD_DIR)
 FLUENT_ICON_BUILD_DIR_Q = quote(FLUENT_ICON_BUILD_DIR)
+ZAFIRO_ICON_BUILD_DIR_Q = quote(ZAFIRO_ICON_BUILD_DIR)
 OVERPASS_BUILD_DIR_Q = quote(OVERPASS_BUILD_DIR)
 FEATHER_FONT_BUILD_DIR_Q = quote(FEATHER_FONT_BUILD_DIR)
 
@@ -534,14 +536,30 @@ server.shell(
     _sudo_user=DESKTOP_USER,
 )
 
+files.directory(
+    name="Ensure Zafiro icon theme build directory exists",
+    path=ZAFIRO_ICON_BUILD_DIR,
+    user=DESKTOP_USER,
+    group=DESKTOP_GROUP,
+    mode="755",
+)
+
 git.repo(
     name="Clone Zafiro icon theme",
     src=ZAFIRO_ICON_REPO,
-    dest=f"{DESKTOP_HOME}/.local/share/icons/Zafiro",
+    dest=ZAFIRO_ICON_BUILD_DIR,
     branch=ZAFIRO_ICON_REF,
     pull=True,
     user=DESKTOP_USER,
     group=DESKTOP_GROUP,
+)
+
+files.rsync(
+    name="Install Zafiro icon theme",
+    src=ZAFIRO_ICON_BUILD_DIR_Q + "/",
+    dest=f"{DESKTOP_HOME}/.local/share/icons/Zafiro/",
+    flags=["-a", "--no-perms", "--chmod=F644,D755", f"--chown={DESKTOP_USER}:{DESKTOP_GROUP}", "--exclude=.git"],
+    _sudo=True,
 )
 
 files.directory(
