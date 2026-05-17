@@ -528,7 +528,7 @@ server.shell(
     name="Install Fluent icon themes (light and dark)",
     commands=(
         f"cd {FLUENT_ICON_BUILD_DIR_Q} && "
-        f"./install.sh -n Fluent -c all -d {quote(f'{DESKTOP_HOME}/.local/share/icons')}"
+        f"./install.sh -n Fluent -a -d {quote(f'{DESKTOP_HOME}/.local/share/icons')}"
     ),
     _sudo=True,
     _sudo_user=DESKTOP_USER,
