@@ -1,8 +1,6 @@
 source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Aliases
-alias ls="ls --color"
-alias lsd="lsd -a"
 alias cls="clear"
 alias gdebug="GTK_DEBUG=interactive"
 
