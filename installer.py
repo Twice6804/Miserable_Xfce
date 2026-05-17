@@ -59,6 +59,8 @@ OVERPASS_REF = host.data.get("overpass_ref", "v3.0.5")
 OVERPASS_BUILD_DIR = host.data.get("overpass_build_dir", f"{DESKTOP_HOME}/.cache/build/overpass")
 FEATHER_FONT_REPO = host.data.get("feather_font_repo", "https://github.com/AT-UI/feather-font.git")
 FEATHER_FONT_BUILD_DIR = host.data.get("feather_font_build_dir", f"{DESKTOP_HOME}/.cache/build/feather-font")
+JETBRAINS_NERD_FONT_VERSION = host.data.get("jetbrains_nerd_font_version", "v3.4.0")
+JETBRAINS_NERD_FONT_BUILD_DIR = host.data.get("jetbrains_nerd_font_build_dir", f"{DESKTOP_HOME}/.cache/build/JetBrainsMono-nerd-font")
 
 PICOM_BUILD_DIR_Q = quote(PICOM_BUILD_DIR)
 PICOM_COMMIT_Q = quote(PICOM_COMMIT) if PICOM_COMMIT else None
@@ -71,6 +73,7 @@ FLUENT_ICON_BUILD_DIR_Q = quote(FLUENT_ICON_BUILD_DIR)
 ZAFIRO_ICON_BUILD_DIR_Q = quote(ZAFIRO_ICON_BUILD_DIR)
 OVERPASS_BUILD_DIR_Q = quote(OVERPASS_BUILD_DIR)
 FEATHER_FONT_BUILD_DIR_Q = quote(FEATHER_FONT_BUILD_DIR)
+JETBRAINS_NERD_FONT_BUILD_DIR_Q = quote(JETBRAINS_NERD_FONT_BUILD_DIR)
 
 
 def read_repo_text(relative_path):
@@ -121,6 +124,7 @@ apt.packages(
         "git",
         "curl",
         "wget",
+        "unzip",
         "jq",
         "imagemagick",
         "playerctl",
@@ -613,6 +617,26 @@ server.shell(
     commands=(
         f"cp {FEATHER_FONT_BUILD_DIR_Q}/src/fonts/feather.ttf "
         f"{quote(f'{DESKTOP_HOME}/.local/share/fonts/')}"
+    ),
+    _sudo=True,
+    _sudo_user=DESKTOP_USER,
+)
+
+files.directory(
+    name="Ensure JetBrainsMono Nerd Font build directory exists",
+    path=JETBRAINS_NERD_FONT_BUILD_DIR,
+    user=DESKTOP_USER,
+    group=DESKTOP_GROUP,
+    mode="755",
+)
+
+server.shell(
+    name="Download and install JetBrainsMono Nerd Font",
+    commands=(
+        f"wget -q -O {JETBRAINS_NERD_FONT_BUILD_DIR_Q}/JetBrainsMono.zip "
+        f"https://github.com/ryanoasis/nerd-fonts/releases/download/{JETBRAINS_NERD_FONT_VERSION}/JetBrainsMono.zip && "
+        f"unzip -o -j {JETBRAINS_NERD_FONT_BUILD_DIR_Q}/JetBrainsMono.zip '*.ttf' "
+        f"-d {quote(f'{DESKTOP_HOME}/.local/share/fonts/')}"
     ),
     _sudo=True,
     _sudo_user=DESKTOP_USER,
