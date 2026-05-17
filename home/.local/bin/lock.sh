@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Shitty i3lock-colors script by github.com/mehedirm6244
 
 declare -i SUSPEND
@@ -19,7 +19,7 @@ create_cache() {
 	size=$(xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\1/')
 
 	echo "Caching background"
-	eval convert "$BG_PATH" \
+	convert "$BG_PATH" \
 		-resize "$size""^" \
 		-gravity center \
 		-extent "$size" \
@@ -72,7 +72,7 @@ lock() {
 		--date-color=$XFG \
 		--time-color=$XFG \
 		--screen 1 \
-		--image ${BG_CACHED_PATH} \
+		--image "${BG_CACHED_PATH}" \
 		--clock \
 		--indicator \
 		--keylayout 1 \

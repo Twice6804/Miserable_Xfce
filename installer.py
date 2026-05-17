@@ -75,18 +75,6 @@ def read_repo_text(relative_path):
     return (HOME_SRC / relative_path).read_text()
 
 
-def upload_text(name, relative_path, dest, mode="644"):
-    files.put(
-        name=name,
-        src=StringIO(read_repo_text(relative_path)),
-        dest=dest,
-        user=DESKTOP_USER,
-        group=DESKTOP_GROUP,
-        mode=mode,
-        add_deploy_dir=False,
-    )
-
-
 def upload_sanitized_text(name, relative_path, dest, replacements, mode="644"):
     content = read_repo_text(relative_path)
     for old, new in replacements:
@@ -482,61 +470,11 @@ upload_sanitized_text(
     ],
 )
 
-upload_sanitized_text(
-    name="Install lock script without eval injection risk",
-    relative_path=".local/bin/lock.sh",
-    dest=f"{DESKTOP_HOME}/.local/bin/lock.sh",
-    replacements=[
-        ("#!/bin/sh", "#!/usr/bin/env bash"),
-        ("eval convert \"$BG_PATH\" \\", "convert \"$BG_PATH\" \\"),
-        ("--image ${BG_CACHED_PATH} \\", "--image \"${BG_CACHED_PATH}\" \\"),
-    ],
-    mode="755",
-)
-
-upload_sanitized_text(
-    name="Install weather script using per-user cache instead of /tmp",
-    relative_path=".config/eww/scripts/weather",
-    dest=f"{DESKTOP_HOME}/.config/eww/scripts/weather",
-    replacements=[
-        ("/tmp/weather", "${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather"),
-    ],
-    mode="755",
-)
-
-upload_sanitized_text(
-    name="Install CPU script using per-user cache instead of /tmp",
-    relative_path=".config/eww/scripts/cpu",
-    dest=f"{DESKTOP_HOME}/.config/eww/scripts/cpu",
-    replacements=[
-        ('cpuFile="/tmp/.cpu_usage"', 'cpuFile="${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-cpu-usage"'),
-    ],
-    mode="755",
-)
-
-upload_sanitized_text(
-    name="Install Gmail script without hardcoded credentials",
-    relative_path=".config/eww/scripts/gmail.sh",
-    dest=f"{DESKTOP_HOME}/.config/eww/scripts/gmail.sh",
-    replacements=[
-        ("#!/bin/python", "#!/usr/bin/env python3"),
-        (
-            "obj.login('username@gmail.com','app_password') # write your email and app password",
-            "import os\n"
-            "user = os.environ.get('MISERABLE_GMAIL_USER')\n"
-            "password = os.environ.get('MISERABLE_GMAIL_APP_PASSWORD')\n"
-            "if not user or not password:\n"
-            "    print('!')\n"
-            "    raise SystemExit(0)\n"
-            "obj.login(user, password)",
-        ),
-    ],
-    mode="755",
-)
-
 for script in [
     ".config/eww/scripts/battery",
+    ".config/eww/scripts/cpu",
     ".config/eww/scripts/disk",
+    ".config/eww/scripts/gmail.sh",
     ".config/eww/scripts/launch.sh",
     ".config/eww/scripts/mem",
     ".config/eww/scripts/playerctl.py",
@@ -545,8 +483,10 @@ for script in [
     ".config/eww/scripts/swap",
     ".config/eww/scripts/updates",
     ".config/eww/scripts/uptime",
+    ".config/eww/scripts/weather",
     ".config/eww/scripts/weather_reload",
     ".config/eww/scripts/wifi",
+    ".local/bin/lock.sh",
     ".local/bin/skippy.sh",
 ]:
     files.file(

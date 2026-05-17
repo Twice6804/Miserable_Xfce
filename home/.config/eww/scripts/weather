@@ -9,7 +9,7 @@
 # https://erikflowers.github.io/weather-icons/api-list.html
 
 updateweather() {
-    [ -d /tmp/weather ] || mkdir /tmp/weather
+    [ -d ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather ] || mkdir ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather
     # Grab your own key from openweathermap
     KEY="insert_key_here"
     ID="insert_city_id_here"
@@ -192,16 +192,16 @@ updateweather() {
         desc="N/A"
         icon=""
     fi
-    echo "$weat" | jq ".main.temp" | cut -d "." -f 1 > /tmp/weather/temp
-    echo "$LOCATION" > /tmp/weather/location
-    echo "$desc" > /tmp/weather/description
-    echo "$icon" > /tmp/weather/icon
+    echo "$weat" | jq ".main.temp" | cut -d "." -f 1 > ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/temp
+    echo "$LOCATION" > ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/location
+    echo "$desc" > ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/description
+    echo "$icon" > ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/icon
 }
 
 case $1 in
-    --icon) cat /tmp/weather/icon ;;
-    --desc) cat /tmp/weather/description ;;
-    --temp) cat /tmp/weather/temp ;;
-    --location) cat /tmp/weather/location ;;
+    --icon) cat ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/icon ;;
+    --desc) cat ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/description ;;
+    --temp) cat ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/temp ;;
+    --location) cat ${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-weather/location ;;
     *) updateweather ;;
 esac

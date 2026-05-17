@@ -3,7 +3,7 @@
 ## Files and Data
 PREV_TOTAL=0
 PREV_IDLE=0
-cpuFile="/tmp/.cpu_usage"
+cpuFile="${XDG_RUNTIME_DIR:-$HOME/.cache}/miserable-cpu-usage"
 
 ## Get CPU usage
 get_cpu() {
