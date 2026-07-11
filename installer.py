@@ -476,6 +476,24 @@ upload_sanitized_text(
     ],
 )
 
+# The panel profile archive ships launcher .desktop files whose Icon paths use
+# the __DESKTOP_HOME__ placeholder; substitute the real per-user home so the
+# icons resolve when the profile is imported.
+server.shell(
+    name="Personalize icon paths inside the panel profile archive",
+    commands=(
+        f"archive={quote(f'{DESKTOP_HOME}/.config/xfce4/panel/Miserable_xfce.tar.bz2')}; "
+        'tmp="$(mktemp -d)"; '
+        'tar xjf "$archive" -C "$tmp"; '
+        "grep -rl __DESKTOP_HOME__ \"$tmp\" | "
+        f"xargs -r sed -i {quote(f's#__DESKTOP_HOME__#{DESKTOP_HOME}#g')}; "
+        'tar cjf "$archive" -C "$tmp" config.txt launcher-2 launcher-4 launcher-12 docklike-11.rc; '
+        'rm -rf "$tmp"'
+    ),
+    _sudo=True,
+    _sudo_user=DESKTOP_USER,
+)
+
 for script in [
     ".config/eww/scripts/battery",
     ".config/eww/scripts/cpu",
