@@ -397,14 +397,24 @@ files.block(
     marker="! {mark} PYINFRA MANAGED MISERABLE_XFCE XRESOURCES",
 )
 
+_zsh_content = read_repo_text(".zshrc").replace(
+    "autoload -U promptinit; promptinit",
+    f"fpath+={PURE_INSTALL_DIR}\nautoload -U promptinit; promptinit",
+)
+assert f"fpath+={PURE_INSTALL_DIR}" in _zsh_content, "Pure fpath injection failed — check home/.zshrc"
+
 files.block(
     name="Merge Miserable_Xfce zsh configuration",
     path=f"{DESKTOP_HOME}/.zshrc",
-    content=read_repo_text(".zshrc").replace(
-        "autoload -U promptinit; promptinit",
-        f"fpath+={PURE_INSTALL_DIR}\nautoload -U promptinit; promptinit",
-    ),
+    content=_zsh_content,
     marker="# {mark} PYINFRA MANAGED MISERABLE_XFCE ZSH",
+)
+
+files.block(
+    name="Merge Miserable_Xfce zsh environment",
+    path=f"{DESKTOP_HOME}/.zshenv",
+    content=read_repo_text(".zshenv"),
+    marker="# {mark} PYINFRA MANAGED MISERABLE_XFCE ZSHENV",
 )
 
 files.directory(
