@@ -118,6 +118,7 @@ apt.packages(
         "onboard",
         "picom",
         "i3lock",
+        "xss-lock",
         "rsync",
         "zsh",
         "zsh-syntax-highlighting",
@@ -520,6 +521,7 @@ for script in [
     ".config/eww/scripts/weather",
     ".config/eww/scripts/weather_reload",
     ".config/eww/scripts/wifi",
+    ".local/bin/autolock.sh",
     ".local/bin/lock.sh",
     ".local/bin/skippy.sh",
 ]:

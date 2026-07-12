@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Auto screen lock
+Comment=Lock the screen with lock.sh on idle/suspend (via xss-lock)
+Exec=sh -c "$HOME/.local/bin/autolock.sh"
+OnlyShowIn=XFCE;
+Terminal=false
+X-XFCE-Autostart-Enabled=true

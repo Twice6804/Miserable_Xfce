@@ -100,11 +100,17 @@ lock() {
 		--pass-media-keys \
 		--pass-screen-keys \
 		--pass-volume-keys \
+		--nofork &
 
+	# Run i3lock in the background so we can suspend while locked, then wait
+	# for it to exit. Blocking here (nofork) is required for xss-lock.
+	lock_pid=$!
 
 	if [[ ${SUSPEND} == 1 ]]; then
 		systemctl suspend
 	fi
+
+	wait "${lock_pid}"
 }
 
 # Read arguements provided

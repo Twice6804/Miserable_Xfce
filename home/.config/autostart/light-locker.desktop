@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Application
+Name=Light Locker
+Comment=Disabled in favour of xss-lock + lock.sh
+Hidden=true
