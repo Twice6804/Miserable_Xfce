@@ -45,9 +45,10 @@
 	        	
 	        	(box :height 85
 	        		 :width 85
-	        			(smallbox :icon ""
-	        					  :description "?"
-	        			)
+	        			(eventbox :onclick "eww close sidebar; xfce4-settings-manager" :cursor "pointer" :tooltip "Settings"
+	        			(box :class "genwin smallbox" :space-evenly "true" :orientation "v"
+	        				(box :orientation "h" :space-evenly "false" :valign "center" :halign "center"
+	        					(label :class "icon" :style "font-family: 'JetBrainsMono Nerd Font';" :text ""))))
 	        	)
 
 	        	(box :height 85
