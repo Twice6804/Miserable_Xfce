@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Application
 Name=Light Locker
-Comment=Disabled in favour of xss-lock + lock.sh
+Comment=Hidden: autolock.sh starts light-locker with lock-on-suspend/idle flags
 Hidden=true

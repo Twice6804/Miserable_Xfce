@@ -41,9 +41,6 @@ PICOM_COMMIT = host.data.get("picom_commit")
 PICOM_REPO = host.data.get("picom_repo", "https://github.com/fdev31/picom.git")
 PICOM_BRANCH = host.data.get("picom_branch", "animation-pr")
 PICOM_BUILD_DIR = host.data.get("picom_build_dir", f"{DESKTOP_HOME}/.cache/build/picom-animation")
-I3LOCK_COLOR_REPO = host.data.get("i3lock_color_repo", "https://github.com/Raymo111/i3lock-color.git")
-I3LOCK_COLOR_REF = host.data.get("i3lock_color_ref", "master")
-I3LOCK_COLOR_BUILD_DIR = host.data.get("i3lock_color_build_dir", f"{DESKTOP_HOME}/.cache/build/i3lock-color")
 FINDEX_REPO = host.data.get("findex_repo", "https://github.com/mdgaziur/findex.git")
 FINDEX_REF = host.data.get("findex_ref")
 FINDEX_BUILD_DIR = host.data.get("findex_build_dir", f"{DESKTOP_HOME}/.cache/build/findex")
@@ -66,8 +63,6 @@ PICOM_BUILD_DIR_Q = quote(PICOM_BUILD_DIR)
 PICOM_COMMIT_Q = quote(PICOM_COMMIT) if PICOM_COMMIT else None
 EWW_BUILD_DIR_Q = quote(EWW_BUILD_DIR)
 EWW_REF_Q = quote(EWW_REF)
-I3LOCK_COLOR_BUILD_DIR_Q = quote(I3LOCK_COLOR_BUILD_DIR)
-I3LOCK_COLOR_REF_Q = quote(I3LOCK_COLOR_REF)
 FINDEX_BUILD_DIR_Q = quote(FINDEX_BUILD_DIR)
 FLUENT_ICON_BUILD_DIR_Q = quote(FLUENT_ICON_BUILD_DIR)
 ZAFIRO_ICON_BUILD_DIR_Q = quote(ZAFIRO_ICON_BUILD_DIR)
@@ -117,8 +112,7 @@ apt.packages(
         "rofi",
         "onboard",
         "picom",
-        "i3lock",
-        "xss-lock",
+        "light-locker",
         "rsync",
         "zsh",
         "zsh-syntax-highlighting",
@@ -277,33 +271,6 @@ if INSTALL_EWW:
         ),
         _sudo=True,
     )
-
-files.directory(
-    name="Ensure i3lock-color build directory exists",
-    path=I3LOCK_COLOR_BUILD_DIR,
-    user=DESKTOP_USER,
-    group=DESKTOP_GROUP,
-    mode="755",
-)
-
-git.repo(
-    name="Clone i3lock-color source",
-    src=I3LOCK_COLOR_REPO,
-    dest=I3LOCK_COLOR_BUILD_DIR,
-    branch=I3LOCK_COLOR_REF,
-    pull=True,
-    _sudo=True,
-)
-
-server.shell(
-    name="Build and install i3lock-color",
-    commands=(
-        f"cd {I3LOCK_COLOR_BUILD_DIR_Q} && "
-        'git tag -f "git-$(git rev-parse --short HEAD)" && '
-        "./install-i3lock-color.sh"
-    ),
-    _sudo=True,
-)
 
 files.directory(
     name="Ensure findex build directory exists",
@@ -522,7 +489,6 @@ for script in [
     ".config/eww/scripts/weather_reload",
     ".config/eww/scripts/wifi",
     ".local/bin/autolock.sh",
-    ".local/bin/lock.sh",
     ".local/bin/skippy.sh",
 ]:
     files.file(
@@ -553,16 +519,30 @@ files.template(
     bg_path=f"{DESKTOP_HOME}/.local/share/backgrounds/nomanssky.png",
 )
 
+# light-locker shows the LightDM greeter, which runs as the lightdm user and
+# can't read $HOME, so the blurred background lives under /usr/share.
+GREETER_BG = "/usr/share/backgrounds/miserable-lock.png"
+
 server.shell(
-    name="Pre-cache lockscreen background",
+    name="Render greeter/lockscreen background",
     commands=(
+        "mkdir -p /usr/share/backgrounds && "
         f"convert {BG_PATH} "
         f"-resize 1920x1080^ -gravity center -extent 1920x1080 "
         f"-brightness-contrast -15x0 -filter Gaussian -blur 0x5 "
-        f"{quote(f'{DESKTOP_HOME}/lockscreen.png')}"
+        f"{GREETER_BG} && chmod 644 {GREETER_BG}"
     ),
     _sudo=True,
-    _sudo_user=DESKTOP_USER,
+)
+
+# Debian's lightdm-gtk-greeter.conf ends in its [greeter] section, so an
+# appended block lands there.
+files.block(
+    name="Set LightDM greeter background",
+    path="/etc/lightdm/lightdm-gtk-greeter.conf",
+    content=f"background={GREETER_BG}",
+    marker="# {mark} PYINFRA MANAGED MISERABLE_XFCE GREETER",
+    _sudo=True,
 )
 
 server.shell(
